@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const authMiddleware = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
@@ -93,6 +94,21 @@ router.post('/login', async (req, res) => {
   } catch (error) {
     console.error('❌ CRITICAL LOGIN ERROR:', error);
     res.status(500).json({ message: 'Server error during login.' });
+  }
+});
+
+// Protected Profile Route
+router.get('/profile', authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    res.json({ user });
+  } catch (error) {
+    console.error('❌ CRITICAL PROFILE ERROR:', error);
+    res.status(500).json({ message: 'Server error fetching profile.' });
   }
 });
 

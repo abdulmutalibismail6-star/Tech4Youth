@@ -1,116 +1,62 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState } from "react";
+
+const API_URL = import.meta.env.VITE_API_URL || "";
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
 
-  const navigate = useNavigate();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevents the form from looping or refreshing the page
-    setError('');
-    setLoading(true);
+  async function handleSubmit(e) {
+    e.preventDefault();
 
     try {
-      console.log('Sending login request to backend...');
-      const response = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch(`${API_URL}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
-      console.log('Server response:', data);
 
       if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
+        setMessage(data.message || "Login failed");
+        return;
       }
 
-      // Save token & user info
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      // Save JWT token (adjust `data.token` if your backend returns a different key like `data.accessToken`)
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+      }
 
-      // Redirect to courses page
-      navigate('/courses');
-    } catch (err) {
-      console.error('Login error:', err.message);
-      setError(err.message);
-    } finally {
-      setLoading(false);
+      if (data.user) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+      }
+
+      setMessage("Login successful!");
+    } catch (error) {
+      setMessage("Network error. Please try again.");
     }
-  };
+  }
 
   return (
-    <div className="mobile-container">
-      <header className="header">
-        <div className="logo">
-          Tech <span className="logo-accent">4</span> Youth
-        </div>
-        <nav className="nav-links">
-          <Link to="/">Home</Link>
-          <Link to="/courses">Courses</Link>
-          <Link to="/login" className="active-link">Login</Link>
-          <Link to="/register">Register</Link>
-        </nav>
-      </header>
-
-      <div className="auth-wrapper">
-        <div className="auth-card">
-          <h1 className="auth-title">Welcome Back!</h1>
-          <p className="auth-subtitle">Login to continue your learning journey.</p>
-
-          {error && (
-            <div style={{
-              backgroundColor: 'rgba(239, 68, 68, 0.2)',
-              border: '1px solid #ef4444',
-              color: '#fca5a5',
-              padding: '10px',
-              borderRadius: '8px',
-              marginBottom: '16px',
-              fontSize: '0.85rem'
-            }}>
-              {error}
-            </div>
-          )}
-
-          <form className="auth-form" onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label className="form-label">Email Address</label>
-              <input
-                type="email"
-                className="form-input"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Password</label>
-              <input
-                type="password"
-                className="form-input"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-
-            <button type="submit" className="auth-submit-btn" disabled={loading}>
-              {loading ? 'Logging in...' : 'Login'}
-            </button>
-          </form>
-
-          <p className="auth-switch-text">
-            Don't have an account? <Link to="/register" className="auth-link">Register</Link>
-          </p>
-        </div>
-      </div>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        required
+      />
+      <button type="submit">Login</button>
+      {message && <p>{message}</p>}
+    </form>
   );
 }
