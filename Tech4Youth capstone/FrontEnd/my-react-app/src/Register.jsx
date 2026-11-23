@@ -1,3 +1,4 @@
+import Navbar from "./Navbar";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -38,60 +39,63 @@ export default function Register() {
   }
 
   return (
-    <div className="auth-wrapper">
-      <div className="auth-card">
-        <h2 className="auth-title">Create Account</h2>
-        <p className="auth-subtitle">Join Tech 4 Youth and start learning</p>
+    <>
+      <Navbar />
+      <div className="auth-wrapper">
+        <div className="auth-card">
+          <h2 className="auth-title">Create Account</h2>
+          <p className="auth-subtitle">Join Tech 4 Youth and start learning</p>
 
-        <form className="auth-form" onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label className="form-label" htmlFor="register-fullname">Full Name</label>
-            <input
-              id="register-fullname"
-              className="form-input"
-              type="text"
-              placeholder="Enter your full name"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              required
-            />
-          </div>
+          <form className="auth-form" onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label className="form-label" htmlFor="register-fullname">Full Name</label>
+              <input
+                id="register-fullname"
+                className="form-input"
+                type="text"
+                placeholder="Enter your full name"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                required
+              />
+            </div>
 
-          <div className="form-group">
-            <label className="form-label" htmlFor="register-email">Email</label>
-            <input
-              id="register-email"
-              className="form-input"
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
+            <div className="form-group">
+              <label className="form-label" htmlFor="register-email">Email</label>
+              <input
+                id="register-email"
+                className="form-input"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
 
-          <div className="form-group">
-            <label className="form-label" htmlFor="register-password">Password</label>
-            <input
-              id="register-password"
-              className="form-input"
-              type="password"
-              placeholder="Create a password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
+            <div className="form-group">
+              <label className="form-label" htmlFor="register-password">Password</label>
+              <input
+                id="register-password"
+                className="form-input"
+                type="password"
+                placeholder="Create a password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
 
-          <button className="auth-submit-btn" type="submit">Register</button>
-          {message && <p className="auth-switch-text">{message}</p>}
-        </form>
+            <button className="auth-submit-btn" type="submit">Register</button>
+            {message && <p className="auth-switch-text">{message}</p>}
+          </form>
 
-        <p className="auth-switch-text">
-          Already have an account?{" "}
-          <Link className="auth-link" to="/login">Login</Link>
-        </p>
+          <p className="auth-switch-text">
+            Already have an account?{" "}
+            <Link className="auth-link" to="/login">Login</Link>
+          </p>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
