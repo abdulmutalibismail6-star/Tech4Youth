@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_API_URL || "";
 
@@ -7,6 +7,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -33,7 +34,8 @@ export default function Login() {
         localStorage.setItem("user", JSON.stringify(data.user));
       }
 
-      setMessage("Login successful!");
+      setMessage("Login successful! Redirecting...");
+      setTimeout(() => navigate("/courses"), 600);
     } catch (error) {
       setMessage("Network error. Please try again.");
     }
